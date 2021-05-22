@@ -16,7 +16,7 @@
         "NSGName": "[toLower( concat( 'nsg1-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
         "subnetID": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-        "vmName": "linVM",
+        "vmName": "k8s  ",
         "adminUsername": "azureuser",
         "adminPassword": "LoveKubernetes001!!",
         "vmSize": "Standard_B2s",
@@ -201,7 +201,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/install-common-tools.sh"
                     ],
-                    "commandToExecute": "sh install-pwsh.sh"
+                    "commandToExecute": "sh install-common-tools.sh"
                 }
             }
         }
