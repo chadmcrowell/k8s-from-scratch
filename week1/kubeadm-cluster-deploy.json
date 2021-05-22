@@ -16,7 +16,7 @@
         "NSGName": "[toLower( concat( 'nsg1-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
         "subnetID": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-        "vmName": "k8s  ",
+        "vmName": "k8s",
         "adminUsername": "azureuser",
         "adminPassword": "LoveKubernetes001!!",
         "vmSize": "Standard_B2s",
