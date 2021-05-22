@@ -1,23 +1,3 @@
-# set env variables
-resourceGroupName="kubeadm-rg"
-location="westus"
-deploymentName="vm-deploy"
-
-# download template
-wget https://raw.githubusercontent.com/chadmcrowell/k8s-from-scratch/main/week1/kubeadm-cluster-deploy.json -O template.json
-
-# create resource group
-az group create -n $resourceGroupName -l $location
-
-# deploy the vms
-az deployment group create \
--g $resourceGroupName \
--n $deploymentName \
---template-file template.json
-
-# list public ip
-az vm list-ip-addresses -g kubeadm-rg | grep ipAddress
-
 # Add Docker’s official GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
@@ -57,15 +37,3 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # install flannel 
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-
-kubeadm join 10.0.0.4:6443 --token idlg06.76ygj6afeta8u4ls \
-    --discovery-token-ca-cert-hash sha256:1d1ac1fca599e37e8f7065e3fd9561f67d12545924abba9871dedca21bff2d69
-
-kubectl run nginx --image=nginx
-
-kubectl get po -o wide
-
-kubectl run curlpod --image=nicolaka/netshoot --rm -it -- sh
-
-# curl 10.244.220.65
-
