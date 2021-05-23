@@ -19,9 +19,9 @@
         "adminPassword": "LoveKubernetes001!!",
         "vmName2": "containerDVM",
         "vmSize": "Standard_B2s",
-        "imagePublisher2": "Canonical",
-        "imageOffer2": "UbuntuServer",
-        "osVersion2": "20.04-LTS"
+        "imagePublisher": "canonical",
+        "imageOffer": "0001-com-ubuntu-server-focal",
+        "imageSku": "20_04-lts"
     },
     "resources": [
         {
@@ -94,9 +94,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('imagePublisher2')]",
-                        "offer": "[variables('imageOffer2')]",
-                        "sku": "[variables('osVersion2')]",
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[variables('imageSku')]",
                         "version": "latest"
                     },
                     "osDisk": {
