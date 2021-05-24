@@ -1,7 +1,7 @@
 # Using a sidecar container to collect logs from two separate streams in Kubernetes
 
 # download the template
-wget https://raw.githubusercontent.com/chadmcrowell/k8s-from-scratch/main/week1/containerd-single-node.json -O template.json
+wget https://raw.githubusercontent.com/chadmcrowell/k8s-from-scratch/main/week1/sidecare-arm-deploy.json -O template.json
 
 # set env variables
 resourceGroupName="sidecar-rg"
@@ -18,7 +18,7 @@ az deployment group create \
 --template-file template.json
 
 # list public ip
-az vm list-ip-addresses -g containerd-rg | grep ipAddress
+az vm list-ip-addresses -g sidecar-rg | grep ipAddress
 
 # Add Docker’s official GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
