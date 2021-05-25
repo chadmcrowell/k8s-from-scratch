@@ -11,8 +11,8 @@ spec:
   - sleep 
   - "3600"
   volumeMounts:
-  - mountPath: /somedir
-    name: my-volume
+  - mountPath: /dir
+    name: myvolume
   volumes:
-  - name: my-volume
+  - name: myvolume
     emptyDir: {}

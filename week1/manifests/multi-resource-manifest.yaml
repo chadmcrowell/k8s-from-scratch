@@ -1,15 +1,15 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: ckad-ns1
+  name: myapp
 
 ---
 
 kind: Pod
 apiVersion: v1
 metadata:
-  name: pod-a
-  namespace: ckad-ns1
+  name: webserver
+  namespace: myapp
 spec:
   containers:
     - image: httpd
@@ -21,10 +21,10 @@ kind: Pod
 apiVersion: v1
 metadata:
   name: pod-b
-  namespace: ckad-ns1
+  namespace: myapp
 spec:
   containers:
     - image: nginx
       name: nginxserver
-    - image: rsyslog
-      name: rsyslogserver
+    - image: nicolaka/netshoot
+      name: netshoot

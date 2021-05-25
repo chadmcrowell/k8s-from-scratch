@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-cm
+  name: nginx
   labels:
     role: web
 spec:
   containers:
-  - name: nginx-cm
+  - name: nginx
     image: nginx
     volumeMounts:
     - name: conf
@@ -14,7 +14,7 @@ spec:
   volumes:
   - name: conf
     configMap:
-      name: nginx-cm
+      name: nginx
       items:
       - key: nginx-custom-config.conf
         path: default.conf
