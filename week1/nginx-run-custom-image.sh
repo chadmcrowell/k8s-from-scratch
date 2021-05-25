@@ -11,12 +11,15 @@ kubectl taint no node1 node-role.kubernetes.io/master:NoSchedule-
 # create a deployment with your custom image
 kubectl create deploy custom --image chadmcrowell/nginx-custom:latest
 
+# describe why pod is not running
+kubectl describe po
+
 # create a service
 kubectl expose deploy custom --type=NodePort --port=80 --name=custom-service
 
-# get the pod IP
-kubectl get po -o wide
+# get services
+kubectl get svc
 
-# curl the pod
-curl http://10.5.0.4
+# curl the service address
+curl http://<ip address of service>
 
