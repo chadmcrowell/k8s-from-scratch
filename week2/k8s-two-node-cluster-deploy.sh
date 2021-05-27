@@ -10,7 +10,7 @@ az group create -n $resourceGroupName -l $location
 az deployment group create \
 -g $resourceGroupName \
 -n $deploymentName \
---template-file template.json
+--template-file k8s-two-node-cluster-deploy.json
 
 # list public ip
 # az vm list-ip-addresses -g containerd-rg | grep ipAddress
