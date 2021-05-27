@@ -13,4 +13,4 @@ az deployment group create \
 --template-file k8s-two-node-cluster-deploy.json
 
 # list public ip
-# az vm list-ip-addresses -g containerd-rg | grep ipAddress
+az vm list-ip-addresses -g week2-rg | grep ipAddress
