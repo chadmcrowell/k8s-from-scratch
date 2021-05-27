@@ -7,4 +7,4 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # apply the cni
-kubectl apply -f /root/kube-flannel.yml
+sudo kubectl apply -f /root/kube-flannel.yml
