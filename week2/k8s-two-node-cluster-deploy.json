@@ -25,6 +25,9 @@
         "imageOffer2": "UbuntuServer",
         "osVersion2": "18.04-LTS",
         "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt",
+        "diskCaching": "ReadWrite",
+        "numDataDisks": 1,
+        "dataDiskSize": 1024,
         "dataDiskResources": {
             "value": [
                 {
@@ -174,17 +177,13 @@
                     "copy": [
                         {
                             "name": "dataDisks",
-                            "count": "[length(variables('dataDisks'))]",
+                            "count": "[variables('numDataDisks')]",
                             "input": {
-                                "lun": "[variables('dataDisks')[copyIndex('dataDisks')].lun]",
-                                "createOption": "[variables('dataDisks')[copyIndex('dataDisks')].createOption]",
-                                "caching": "[variables('dataDisks')[copyIndex('dataDisks')].caching]",
-                                "diskSizeGB": "[variables('dataDisks')[copyIndex('dataDisks')].diskSizeGB]",
-                                "managedDisk": {
-                                    "id": "[coalesce(variables('dataDisks')[copyIndex('dataDisks')].id, if(equals(variables('dataDisks')[copyIndex('dataDisks')].name, json('null')), json('null'), resourceId('Microsoft.Compute/disks', variables('dataDisks')[copyIndex('dataDisks')].name)))]",
-                                    "storageAccountType": "[variables('dataDisks')[copyIndex('dataDisks')].storageAccountType]"
-                                },
-                                "writeAcceleratorEnabled": "[variables('dataDisks')[copyIndex('dataDisks')].writeAcceleratorEnabled]"
+                                "caching": "[variables('diskCaching')]",
+                                "diskSizeGB": "[variables('dataDiskSize')]",
+                                "lun": "[copyIndex('dataDisks')]",
+                                "name": "[concat(variables('vmName'),'-datadisk',copyIndex('dataDisks'))]",
+                                "createOption": "Empty"
                             }
                         }
                     ]
