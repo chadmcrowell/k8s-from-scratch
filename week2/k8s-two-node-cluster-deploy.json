@@ -49,12 +49,12 @@
                         }
                     },
                     {
-                        "name": "web_rule",
+                        "name": "nodeport_rule",
                         "properties": {
-                            "description": "Locks inbound down to ssh default port 22.",
+                            "description": "opens up nodeport service in kubernetes",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
-                            "destinationPortRange": "80",
+                            "destinationPortRange": "30000-32767",
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
