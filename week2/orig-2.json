@@ -24,36 +24,7 @@
         "imagePublisher2": "Canonical",
         "imageOffer2": "UbuntuServer",
         "osVersion2": "18.04-LTS",
-        "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt",
-        "dataDiskResources": {
-            "value": [
-                {
-                    "name": "vm3234_DataDisk_0",
-                    "sku": "Premium_LRS",
-                    "properties": {
-                        "diskSizeGB": 1024,
-                        "creationData": {
-                            "createOption": "empty"
-                        }
-                    }
-                }
-            ]
-        },
-        "dataDisks": {
-            "value": [
-                {
-                    "lun": 0,
-                    "createOption": "attach",
-                    "caching": "None",
-                    "writeAcceleratorEnabled": false,
-                    "id": null,
-                    "name": "vm3234_DataDisk_0",
-                    "storageAccountType": null,
-                    "diskSizeGB": null,
-                    "diskEncryptionSet": null
-                }
-            ]
-        }
+        "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt"
     },
     "resources": [
         {
@@ -122,23 +93,6 @@
             }
         },
         {
-            "name": "[variables('dataDiskResources')[copyIndex()].name]",
-            "type": "Microsoft.Compute/disks",
-            "apiVersion": "2020-09-30",
-            "location": "[variables('location')]",
-            "properties": "[variables('dataDiskResources')[copyIndex()].properties]",
-            "sku": {
-                "name": "[variables('dataDiskResources')[copyIndex()].sku]"
-            },
-            "copy": {
-                "name": "managedDiskResources",
-                "count": "[length(variables('dataDiskResources'))]"
-            },
-            "zones": [
-                "1"
-            ]
-        },
-        {
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[concat(variables('vmName'),copyIndex())]",
@@ -148,7 +102,6 @@
                 "count": "[variables('numberOfInstances')]"
             },
             "dependsOn": [
-                "managedDiskResources",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]"
             ],
             "properties": {
@@ -170,24 +123,7 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage"
-                    },
-                    "copy": [
-                        {
-                            "name": "dataDisks",
-                            "count": "[length(variables('dataDisks'))]",
-                            "input": {
-                                "lun": "[variables('dataDisks')[copyIndex('dataDisks')].lun]",
-                                "createOption": "[variables('dataDisks')[copyIndex('dataDisks')].createOption]",
-                                "caching": "[variables('dataDisks')[copyIndex('dataDisks')].caching]",
-                                "diskSizeGB": "[variables('dataDisks')[copyIndex('dataDisks')].diskSizeGB]",
-                                "managedDisk": {
-                                    "id": "[coalesce(variables('dataDisks')[copyIndex('dataDisks')].id, if(equals(variables('dataDisks')[copyIndex('dataDisks')].name, json('null')), json('null'), resourceId('Microsoft.Compute/disks', variables('dataDisks')[copyIndex('dataDisks')].name)))]",
-                                    "storageAccountType": "[variables('dataDisks')[copyIndex('dataDisks')].storageAccountType]"
-                                },
-                                "writeAcceleratorEnabled": "[variables('dataDisks')[copyIndex('dataDisks')].writeAcceleratorEnabled]"
-                            }
-                        }
-                    ]
+                    }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
