@@ -13,7 +13,7 @@
         "addressPrefix": "10.0.0.0/16",
         "publicIpAddressName": "node1-pubip1",
         "publicIpAddressName2": "node2-pubip2",
-        "publicIpAddressType": "Dynamic",
+        "publicIpAddressType": "Static",
         "publicIpAddressSku": "Standard",
         "adminUsername": "azureuser",
         "adminPassword": "LoveKubernetes001!!",
@@ -312,8 +312,8 @@
                 },
                 "osProfile": {
                     "computerName": "[variables('vmName2')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
+                    "adminUsername": "[variables('adminUsername')]",
+                    "adminPassword": "[variables('adminPassword')]"
                 }
             }
         },
