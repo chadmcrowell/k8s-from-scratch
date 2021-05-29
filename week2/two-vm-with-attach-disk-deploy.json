@@ -24,7 +24,39 @@
         "imagePublisher2": "Canonical",
         "imageOffer2": "UbuntuServer",
         "osVersion2": "18.04-LTS",
-        "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt"
+        "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt",
+        "diskCaching": "ReadWrite",
+        "numDataDisks": 1,
+        "dataDiskSize": 1024,
+        "dataDiskResources": {
+            "value": [
+                {
+                    "name": "vm3234_DataDisk_0",
+                    "sku": "Premium_LRS",
+                    "properties": {
+                        "diskSizeGB": 1024,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                }
+            ]
+        },
+        "dataDisks": {
+            "value": [
+                {
+                    "lun": 0,
+                    "createOption": "attach",
+                    "caching": "None",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "vm3234_DataDisk_0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
+                }
+            ]
+        }
     },
     "resources": [
         {
@@ -123,7 +155,20 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage"
-                    }
+                    },
+                    "copy": [
+                        {
+                            "name": "dataDisks",
+                            "count": "[variables('numDataDisks')]",
+                            "input": {
+                                "caching": "[variables('diskCaching')]",
+                                "diskSizeGB": "[variables('dataDiskSize')]",
+                                "lun": "[copyIndex('dataDisks')]",
+                                "name": "[concat(uniquestring(resourceGroup().id),'-datadisk',copyIndex('dataDisks'))]",
+                                "createOption": "Empty"
+                            }
+                        }
+                    ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
