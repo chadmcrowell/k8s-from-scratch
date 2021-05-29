@@ -20,7 +20,7 @@
         "vmName": "k8s0",
         "vmName2": "k8s1",
         "osDiskType": "Premium_LRS",
-        "virtualMachineSize": "Standard_B2s",
+        "virtualMachineSize": "Standard_D2s_v3",
         "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
         "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
