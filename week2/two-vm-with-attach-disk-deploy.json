@@ -27,36 +27,7 @@
         "customData": "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/cloud-init-nginx.txt",
         "diskCaching": "ReadWrite",
         "numDataDisks": 1,
-        "dataDiskSize": 1024,
-        "dataDiskResources": {
-            "value": [
-                {
-                    "name": "vm3234_DataDisk_0",
-                    "sku": "Premium_LRS",
-                    "properties": {
-                        "diskSizeGB": 1024,
-                        "creationData": {
-                            "createOption": "empty"
-                        }
-                    }
-                }
-            ]
-        },
-        "dataDisks": {
-            "value": [
-                {
-                    "lun": 0,
-                    "createOption": "attach",
-                    "caching": "None",
-                    "writeAcceleratorEnabled": false,
-                    "id": null,
-                    "name": "vm3234_DataDisk_0",
-                    "storageAccountType": null,
-                    "diskSizeGB": null,
-                    "diskEncryptionSet": null
-                }
-            ]
-        }
+        "dataDiskSize": 1024
     },
     "resources": [
         {
