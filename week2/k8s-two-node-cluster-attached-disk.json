@@ -160,6 +160,9 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-04-01",
             "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
