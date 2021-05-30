@@ -2,7 +2,6 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: ghost-vol
-  namespace: ghost
   labels:
       type: local
 spec:
