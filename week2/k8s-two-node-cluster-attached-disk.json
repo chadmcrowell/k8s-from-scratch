@@ -30,66 +30,6 @@
     },
     "resources": [
         {
-            "name": "[variables('networkInterfaceName')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2019-07-01",
-            "location": "[variables('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
-                            }
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[variables('nsgId')]"
-                }
-            }
-        },
-        {
-            "name": "[variables('networkInterfaceName2')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2019-07-01",
-            "location": "[variables('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName2'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName2'))]"
-                            }
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[variables('nsgId')]"
-                }
-            }
-        },
-        {
             "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2019-02-01",
@@ -180,6 +120,66 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[variables('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2019-07-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[variables('nsgId')]"
+                }
+            }
+        },
+        {
+            "name": "[variables('networkInterfaceName2')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2019-07-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName2'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName2'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[variables('nsgId')]"
+                }
             }
         },
         {
