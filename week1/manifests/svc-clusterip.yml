@@ -6,6 +6,5 @@ spec:
   selector:
     run: nginx
   ports:
-  - port: 80
-    name: HTTP
-  type: NodePort
+  - protocol: 80
+    port: HTTP
