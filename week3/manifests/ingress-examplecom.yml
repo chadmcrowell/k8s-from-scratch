@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: nginx
+spec:
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /app1
+            backend:
+              serviceName: nginx
+              servicePort: 80
+          - path: /app2
+            backend:
+              serviceName: nginx2
+              servicePort: 80
