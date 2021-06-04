@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hello-info-tls
+  namespace: default
+spec:
+  dnsNames:
+    - hello-world.info
+  commonName: hello-world.info
+  secretName: hello-info-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
