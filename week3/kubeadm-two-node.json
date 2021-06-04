@@ -199,9 +199,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/install-k8s-v1.20.sh"
+                        "https://raw.githubusercontent.com/chadmcrowell/scripts-for-labs/master/Bash/install-k8s-v1.20-advertise.sh"
                     ],
-                    "commandToExecute": "sh install-k8s-v1.20.sh"
+                    "commandToExecute": "sh install-k8s-v1.20-advertise.sh"
                 }
             }
         }
