@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 @minValue(1)
 @maxValue(50)
 @description('The number of nodes for the cluster. 1 Node is enough for Dev/Test and minimum 3 nodes, is recommended for Production')
-param agentCount int = 1
+param agentCount int = 3
 
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_B2s'
