@@ -1,5 +1,5 @@
 # initialize the cluster
-sudo kubeadm init --apiserver-advertise-address 3.18.29.128 --pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --control-plane-endpoint "LOAD_BALANCER:6443" --upload-certs --pod-network-cidr=10.244.0.0/16
 
 # set config and permissions
 mkdir -p $HOME/.kube
