@@ -11,12 +11,18 @@
         "subnetPrefix": "10.0.0.0/24",
         "nicName": "[toLower( concat( 'nic1-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "publicIPAddressName": "[toLower( concat( 'pip-win-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
+        "publicIPAddressName2": "[toLower( concat( 'lb', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "DNSPrefix": "[toLower( concat( 'windns-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "publicIPAddressType": "Static",
         "NSGName": "[toLower( concat( 'nsg1-', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
         "subnetID": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
         "vmName": "k8s",
+        "loadBalancerName": "k8slb",
+        "bePoolName": "backendPool",
+        "natPoolName": "natPool",
+        "lbID": "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
+        "frontEndIPConfigID": "[concat(variables('lbID'), '/frontendIPConfigurations/loadBalancerFrontEnd')]",
         "adminUsername": "azureuser",
         "adminPassword": "LoveKubernetes001!!",
         "vmSize": "Standard_B2s",
@@ -60,6 +66,92 @@
                             "access": "Allow",
                             "priority": 120,
                             "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "kubeapi_rule",
+                        "properties": {
+                            "description": "opens up to api in kubernetes",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "6443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "https_rule",
+                        "properties": {
+                            "description": "opens up https",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2017-10-01",
+            "name": "[variables('publicIPAddressName2')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static",
+                "dnsSettings": {
+                    "domainNameLabel": "[toLower( concat( 'k8s', substring( uniquestring(resourceGroup().id), 0, 5 ) ) )]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2017-10-01",
+            "name": "[variables('loadBalancerName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+            ],
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "LoadBalancerFrontEnd",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('bePoolName')]"
+                    }
+                ],
+                "inboundNatPools": [
+                    {
+                        "name": "[variables('natPoolName')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[variables('frontEndIPConfigID')]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPortRangeStart": 6443,
+                            "frontendPortRangeEnd": 6443,
+                            "backendPort": 6443
                         }
                     }
                 ]
