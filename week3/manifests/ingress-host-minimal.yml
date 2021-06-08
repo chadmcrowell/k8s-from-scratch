@@ -21,6 +21,8 @@ spec:
         path: "/"
         backend:
           service:
-            name: host-service
+            name: checkout-service
             port:
               number: 80
+
+              
