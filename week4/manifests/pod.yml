@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: nginx:1.15.5
+    volumeMounts:
+    - mountPath: "/mnt/azure"
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: azurefile
