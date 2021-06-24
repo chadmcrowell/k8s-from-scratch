@@ -10,7 +10,7 @@ spec:
   tls:
     - hosts:
         - dotnetappsample444.southcentralus.cloudapp.azure.com
-      secretName: rbot-tls
+      secretName: app-tls
   rules:
     - host: dotnetappsample444.southcentralus.cloudapp.azure.com
       http:
