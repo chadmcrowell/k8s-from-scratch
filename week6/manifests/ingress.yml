@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - dotnetappsample444.southcentralus.cloudapp.azure.com
+        - dotnetapp.southcentralus.cloudapp.azure.com
       secretName: app-tls
   rules:
-    - host: dotnetappsample444.southcentralus.cloudapp.azure.com
+    - host: dotnetapp.southcentralus.cloudapp.azure.com
       http:
         paths:
           - path: /
