@@ -5,7 +5,7 @@ metadata:
 spec:
   secretName: app-tls
   dnsNames:
-    - dotnetappsample238.southcentralus.cloudapp.azure.com
+    - dotnetappsample444.southcentralus.cloudapp.azure.com
   issuerRef:
     name: app-tls
     kind: ClusterIssuer

@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - dotnetappsample238.southcentralus.cloudapp.azure.com
+        - dotnetappsample444.southcentralus.cloudapp.azure.com
       secretName: rbot-tls
   rules:
-    - host: dotnetappsample238.southcentralus.cloudapp.azure.com
+    - host: dotnetappsample444.southcentralus.cloudapp.azure.com
       http:
         paths:
           - path: /
