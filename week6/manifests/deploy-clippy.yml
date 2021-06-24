@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: clippy
+  name: clippy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clippy
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: clippy
+    spec:
+      containers:
+      - image: r.j3ss.co/party-clippy
+        name: party-clippy
+        tty: true
+        command: ["party-clippy"]
+        ports:
+        - containerPort: 8080
