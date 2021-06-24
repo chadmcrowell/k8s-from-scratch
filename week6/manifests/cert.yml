@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: app-tls
+spec:
+  secretName: app-tls
+  dnsNames:
+    - dotnetappsample238.southcentralus.cloudapp.azure.com
+  issuerRef:
+    name: app-tls
+    kind: ClusterIssuer

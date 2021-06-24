@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ing
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    certmanager.k8s.io/cluster-issuer: app-tls
+    appgw.ingress.kubernetes.io/ssl-redirect: 'true'
+spec:
+  tls:
+    - hosts:
+        - dotnetappsample238.southcentralus.cloudapp.azure.com
+      secretName: rbot-tls
+  rules:
+    - host: dotnetappsample238.southcentralus.cloudapp.azure.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
