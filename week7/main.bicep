@@ -29,7 +29,7 @@ var tags = {
   vmssValue: 'true'
   projectCode: '264082'
 }
-var agentPoolName = 'linuxpool'
+var agentPoolName = 'systempool'
 
 // Azure virtual network
 resource vn 'Microsoft.Network/virtualNetworks@2020-06-01' = {
