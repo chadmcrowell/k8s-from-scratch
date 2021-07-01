@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stress
+  name: stress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stress
+  template:
+    metadata:
+      labels:
+        app: stress
+    spec:
+      containers:
+      - image: progrium/stress
+        name: stress
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        command: 
+          - sleep
+          - "3600"
+      restartPolicy: Always
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gpu"
+        effect: "NoSchedule"
