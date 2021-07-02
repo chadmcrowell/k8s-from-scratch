@@ -26,8 +26,3 @@ spec:
           - sleep
           - "3600"
       restartPolicy: Always
-      tolerations:
-      - key: "sku"
-        operator: "Equal"
-        value: "gpu"
-        effect: "NoSchedule"
