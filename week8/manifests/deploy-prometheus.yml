@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8000"
+        prometheus.io/scheme: "http"
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: vishiy/tools:prommetricsv5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        - containerPort: 8080
