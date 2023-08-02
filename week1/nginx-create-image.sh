@@ -9,7 +9,7 @@ docker pull nginx
   <title>Custom Nginx</title>
 </head>
 <body>
-  <h2>Congrats!! You\'ve created a custom container image and deployed it to Kubernetes!!</h2>
+  <h2>Congrats!! You created a custom container image and deployed it to Kubernetes!!</h2>
 </body>
 </html>
 
