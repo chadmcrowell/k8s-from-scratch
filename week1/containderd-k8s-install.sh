@@ -1,63 +1,88 @@
-# add k8s repository GPG key
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
-# add k8s repository
-sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+###############################################
+### ⚠️ INSTALLING CONTAINERD ⚠️ ###############
+###############################################
 
-# install kubelet, kubeadm and kubectl
-sudo apt-get install -y kubelet=1.20.2-00 kubeadm=1.20.2-00 kubectl=1.20.2-00
+# update packages in apt package manager
+sudo apt update
 
-# enable bridge networking
-sudo vi /etc/sysctl.conf
+# install containerd using the apt package manager
+# containerd is lightwieght, reliable and fast (CRI native)
+sudo apt-get install -y containerd
 
-# add the following at the bottom
-net.bridge.bridge-nf-call-iptables = 1
+# create /etc/containerd directory for containerd configuration
+sudo mkdir -p /etc/containerd
 
-# enable ip forwarding
-sudo -s
-sudo echo '1' > /proc/sys/net/ipv4/ip_forward
+# Generate the default containerd configuration
+# Change the pause container to version 3.10 (pause container holds the linux ns for Kubernetes namespaces)
+# Set `SystemdCgroup` to true to use same cgroup drive as kubelet
+containerd config default \
+| sed 's/SystemdCgroup = false/SystemdCgroup = true/' \
+| sed 's|sandbox_image = ".*"|sandbox_image = "registry.k8s.io/pause:3.10"|' \
+| sudo tee /etc/containerd/config.toml > /dev/null
 
-# Reload the configurations
-sudo sysctl --system
+# Restart containerd to apply the configuration changes
+sudo systemctl restart containerd
 
-# load modules for storage overlay and packet filter
-sudo modprobe overlay
-sudo modprobe br_netfilter
-
-# disable swap
+# Kubernetes doesn’t support swap unless explicitly configured under cgroup v2
 sudo swapoff -a
 
-# pull containers for kubeadm
-sudo kubeadm config images pull
+###############################################
+### ⚠️ INSTALLING KUBERNETES ⚠️ ###############
+###############################################
 
-# initialize the cluster
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+# update packages
+sudo apt update
 
-# set config and permissions
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# install apt-transport-https ca-certificates curl and gpg packages using 
+# apt package manager in order to fetch Kubernetes packages from 
+# external HTTPS repositories
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
-# install flannel 
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+# create a secure directory for storing GPG keyring files 
+# used by APT to verify trusted repositories. 
+# This is part of a newer, more secure APT repository layout that 
+# keeps trusted keys isolated from system-wide GPG configurations
+sudo mkdir -p -m 755 /etc/apt/keyrings
 
-# view the taints
-kubectl get nodes -o=custom-columns=NODE:.metadata.name,KEY:.spec.taints[*].key,VALUE:.spec.taints[*].value,EFFECT:.spec.taints[*].effect
+# download the k8s release gpg key FOR 1.33
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-# untaint the node
-kubectl taint no containerdvm node-role.kubernetes.io/master:NoSchedule-
 
-# create a deployment
-kubectl create deploy connector --image gcr.io/google-samples/kubernetes-bootcamp:v1
+# Download and convert the Kubernetes APT repository's GPG public key into
+# a binary format (`.gpg`) that APT can use to verify the integrity
+# and authenticity of Kubernetes packages during installation. 
+# This overwrites any existing configuration in 
+# /etc/apt/sources.list.d/kubernetes.list FOR 1.33 
+# (`tee` without `-a` (append) will **replace** the contents of the file)
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-# poke a hole into the cluster and open a new tab
-kubectl proxy
+# update packages in apt 
+sudo apt-get update
 
-# curl localhost
-curl http://localhost:8001/version
+apt-cache madison kubelet
+apt-cache madison kubectl
+apt-cache madison kubeadm
 
-# get the pod name
-kubectl get po
 
-# access the pod from outside the cluster
-curl http://localhost:8001/api/v1/namespaces/default/pods/connector-5b6c6d8d55-p6rjf
+KUBE_VERSION="1.33.2-1.1"
+
+# install kubelet, kubeadm, and kubectl at version 1.33.2-1.1
+sudo apt-get install -y kubelet=$KUBE_VERSION kubeadm=$KUBE_VERSION kubectl=$KUBE_VERSION
+
+# hold these packages at version 
+sudo apt-mark hold kubelet kubeadm kubectl
+
+# enable IP packet forwarding on the node, which allows the Linux kernel 
+# to route network traffic between interfaces. 
+# This is essential in Kubernetes for pod-to-pod communication 
+# across nodes and for routing traffic through the control plane
+# or CNI-managed networks
+sudo sysctl -w net.ipv4.ip_forward=1
+
+# uncomment the line in /etc/sysctl.conf enabling IP forwarding after reboot
+sudo sed -i '/^#net\.ipv4\.ip_forward=1/s/^#//' /etc/sysctl.conf
+
+# Apply the changes to sysctl.conf
+# Any changes made to sysctl configuration files take immediate effect without requiring a reboot
+sudo sysctl -p
