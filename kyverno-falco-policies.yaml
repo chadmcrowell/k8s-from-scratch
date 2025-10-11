@@ -1,0 +1,61 @@
+# Secure-by-default guardrails with Kyverno + Falco
+
+# Kyverno: Disallow hostPath
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-hostpath
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: no-hostpath
+      match:
+        resources:
+          kinds: ["Pod"]
+      validate:
+        message: "HostPath volumes are not allowed."
+        pattern:
+          spec:
+            volumes:
+              - name: "*"
+                =(hostPath): "null"
+---
+# Kyverno: Require runAsNonRoot & readOnlyRootFilesystem
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-secure-pod-options
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: require-nonroot
+      match:
+        resources:
+          kinds: ["Pod"]
+      validate:
+        message: "Containers must run as non-root with readOnlyRootFilesystem."
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+            containers:
+              - name: "*"
+                securityContext:
+                  runAsNonRoot: true
+                  readOnlyRootFilesystem: true
+---
+# Falco rule: Detect terminal shells in containers
+apiVersion: falco.org/v1alpha1
+kind: FalcoRule
+metadata:
+  name: detect-shell-in-container
+spec:
+  rules:
+    - rule: Terminal shell in container
+      desc: Detect shells running in a container
+      condition: >
+        spawned_process and container and proc.name in (bash, sh, zsh, ash)
+      output: >
+        Shell spawned in container (user=%user.name process=%proc.name container_id=%container.id image=%container.image.repository)
+      priority: Notice
+      tags: [process, container, mitre_t1059]

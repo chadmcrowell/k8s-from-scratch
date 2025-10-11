@@ -1,0 +1,59 @@
+# Example Helm values for common CNCF components (portable, on-prem friendly)
+# Use with: helm install <release> <chart> -n <ns> -f thisfile.yaml --create-namespace
+
+# --- Kyverno ---
+kyverno:
+  replicaCount: 2
+  image:
+    pullPolicy: IfNotPresent
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits:   { cpu: 200m, memory: 256Mi }
+  admissionController:
+    podSecurity:
+      enabled: true  # enable PSA baseline/restricted translation
+  reportsController:
+    enabled: true
+
+# --- Falco (Helm chart: falcosecurity/falco) ---
+falco:
+  driver:
+    kind: modern_ebpf
+  falco:
+    rulesFiles:
+      - /etc/falco/rules.d
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 300m, memory: 512Mi }
+  extra:
+    env:
+      FALCO_BPF_PROBE: ""
+
+# --- Prometheus (kube-prometheus-stack minimal) ---
+kube-prometheus-stack:
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+  prometheus:
+    prometheusSpec:
+      retention: 24h
+      retentionSize: 5GiB
+      resources:
+        requests: { cpu: 200m, memory: 512Mi }
+        limits:   { cpu: 500m, memory: 1Gi }
+  alertmanager:
+    enabled: true
+
+# --- Ingress NGINX ---
+ingress-nginx:
+  controller:
+    replicaCount: 2
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits:   { cpu: 300m, memory: 256Mi }
+    admissionWebhooks:
+      enabled: true
+
+# NOTES:
+# - Keep charts pinned with --version to ensure reproducibility.
+# - Tune resources for your nodes; defaults are intentionally conservative.

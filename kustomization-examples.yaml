@@ -1,0 +1,37 @@
+# Three portable overlays (dev/stage/prod) demonstrating namePrefix, labels, and patches.
+# Directory suggestion:
+# base/ (deployment+service)
+# overlays/dev|stage|prod/
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: dev-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: dev
+patchesStrategicMerge:
+  - ./overlays/dev/deploy-patch.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: stage-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: stage
+patchesStrategicMerge:
+  - ./overlays/stage/deploy-patch.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: prod-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: prod
+patchesStrategicMerge:
+  - ./overlays/prod/deploy-patch.yaml

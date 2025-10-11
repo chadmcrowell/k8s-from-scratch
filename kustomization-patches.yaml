@@ -1,0 +1,80 @@
+# Example base Deployment and three overlay patches
+
+# base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels: { app: my-app }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: my-app }
+  template:
+    metadata:
+      labels: { app: my-app }
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0
+          ports: [{ containerPort: 8080 }]
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 5
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
+---
+# overlays/dev/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0-dev
+          env:
+            - name: LOG_LEVEL
+              value: "debug"
+---
+# overlays/stage/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0-rc
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 300m, memory: 256Mi }
+---
+# overlays/prod/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  template:
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: { app: my-app }
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0
+          resources:
+            requests: { cpu: 150m, memory: 192Mi }
+            limits:   { cpu: 500m, memory: 384Mi }

@@ -1,0 +1,451 @@
+# --- File: helm-values-examples.yaml
+# Example Helm values for common CNCF components (portable, on-prem friendly)
+# Use with: helm install <release> <chart> -n <ns> -f thisfile.yaml --create-namespace
+
+# --- Kyverno ---
+kyverno:
+  replicaCount: 2
+  image:
+    pullPolicy: IfNotPresent
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits:   { cpu: 200m, memory: 256Mi }
+  admissionController:
+    podSecurity:
+      enabled: true  # enable PSA baseline/restricted translation
+  reportsController:
+    enabled: true
+
+# --- Falco (Helm chart: falcosecurity/falco) ---
+falco:
+  driver:
+    kind: modern_ebpf
+  falco:
+    rulesFiles:
+      - /etc/falco/rules.d
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 300m, memory: 512Mi }
+  extra:
+    env:
+      FALCO_BPF_PROBE: ""
+
+# --- Prometheus (kube-prometheus-stack minimal) ---
+kube-prometheus-stack:
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+  prometheus:
+    prometheusSpec:
+      retention: 24h
+      retentionSize: 5GiB
+      resources:
+        requests: { cpu: 200m, memory: 512Mi }
+        limits:   { cpu: 500m, memory: 1Gi }
+  alertmanager:
+    enabled: true
+
+# --- Ingress NGINX ---
+ingress-nginx:
+  controller:
+    replicaCount: 2
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits:   { cpu: 300m, memory: 256Mi }
+    admissionWebhooks:
+      enabled: true
+
+# NOTES:
+# - Keep charts pinned with --version to ensure reproducibility.
+# - Tune resources for your nodes; defaults are intentionally conservative.
+
+# --- File: kustomization-examples.yaml
+# Three portable overlays (dev/stage/prod) demonstrating namePrefix, labels, and patches.
+# Directory suggestion:
+# base/ (deployment+service)
+# overlays/dev|stage|prod/
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: dev-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: dev
+patchesStrategicMerge:
+  - ./overlays/dev/deploy-patch.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: stage-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: stage
+patchesStrategicMerge:
+  - ./overlays/stage/deploy-patch.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./base
+namePrefix: prod-
+commonLabels:
+  app.kubernetes.io/part-of: kfs
+  app.kubernetes.io/environment: prod
+patchesStrategicMerge:
+  - ./overlays/prod/deploy-patch.yaml
+
+# --- File: kustomization-patches.yaml
+# Example base Deployment and three overlay patches
+
+# base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels: { app: my-app }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: my-app }
+  template:
+    metadata:
+      labels: { app: my-app }
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0
+          ports: [{ containerPort: 8080 }]
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 5
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
+---
+# overlays/dev/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0-dev
+          env:
+            - name: LOG_LEVEL
+              value: "debug"
+---
+# overlays/stage/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0-rc
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 300m, memory: 256Mi }
+---
+# overlays/prod/deploy-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  template:
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: { app: my-app }
+      containers:
+        - name: my-app
+          image: ghcr.io/example/my-app:1.0.0
+          resources:
+            requests: { cpu: 150m, memory: 192Mi }
+            limits:   { cpu: 500m, memory: 384Mi }
+
+# --- File: custom-resource-definitions.yaml
+# Minimal self-contained CRDs useful for operator exercises and demos.
+# These CRDs are examples (group "ops.kubeskills.io") and safe to apply to any cluster.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: apps.ops.kubeskills.io
+spec:
+  group: ops.kubeskills.io
+  names:
+    kind: App
+    plural: apps
+    singular: app
+    shortNames: ["kfsapp"]
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required: ["image"]
+              properties:
+                image:
+                  type: string
+                  pattern: "^[\w./:-]+$"
+                replicas:
+                  type: integer
+                  minimum: 0
+                env:
+                  type: array
+                  items:
+                    type: object
+                    required: ["name","value"]
+                    properties:
+                      name: { type: string }
+                      value: { type: string }
+            status:
+              type: object
+              properties:
+                readyReplicas: { type: integer }
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: policies.ops.kubeskills.io
+spec:
+  group: ops.kubeskills.io
+  names:
+    kind: Policy
+    plural: policies
+    singular: policy
+    shortNames: ["kfspol"]
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: ["deny-egress","image-allowlist","pss-restricted"]
+                params:
+                  type: object
+                  additionalProperties: true
+
+# --- File: kyverno-falco-policies.yaml
+# Secure-by-default guardrails with Kyverno + Falco
+
+# Kyverno: Disallow hostPath
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-hostpath
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: no-hostpath
+      match:
+        resources:
+          kinds: ["Pod"]
+      validate:
+        message: "HostPath volumes are not allowed."
+        pattern:
+          spec:
+            volumes:
+              - name: "*"
+                =(hostPath): "null"
+---
+# Kyverno: Require runAsNonRoot & readOnlyRootFilesystem
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-secure-pod-options
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: require-nonroot
+      match:
+        resources:
+          kinds: ["Pod"]
+      validate:
+        message: "Containers must run as non-root with readOnlyRootFilesystem."
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+            containers:
+              - name: "*"
+                securityContext:
+                  runAsNonRoot: true
+                  readOnlyRootFilesystem: true
+---
+# Falco rule: Detect terminal shells in containers
+apiVersion: falco.org/v1alpha1
+kind: FalcoRule
+metadata:
+  name: detect-shell-in-container
+spec:
+  rules:
+    - rule: Terminal shell in container
+      desc: Detect shells running in a container
+      condition: >
+        spawned_process and container and proc.name in (bash, sh, zsh, ash)
+      output: >
+        Shell spawned in container (user=%user.name process=%proc.name container_id=%container.id image=%container.image.repository)
+      priority: Notice
+      tags: [process, container, mitre_t1059]
+
+# --- File: networkpolicy-rbac-examples.yaml
+# Namespace default deny + limited read RBAC
+
+# Deny all ingress/egress by default in ns: apps
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+  labels:
+    name: apps
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: apps
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress","Egress"]
+---
+# Allow egress DNS + HTTP/HTTPS for update checks
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-core
+  namespace: apps
+spec:
+  podSelector: {}
+  policyTypes: ["Egress"]
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+---
+# RBAC: namespace-scoped read-only
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: read-only
+  namespace: apps
+rules:
+  - apiGroups: [""]
+    resources: ["pods","services","endpoints","configmaps"]
+    verbs: ["get","list","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-only-binding
+  namespace: apps
+subjects:
+  - kind: User
+    name: developer@example.com
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: read-only
+  apiGroup: rbac.authorization.k8s.io
+
+# --- File: networkpolicy-rbac-variations.yaml
+# Variations: allow namespace-isolated HTTP and a cluster-wide viewer role
+
+# Allow only traffic from same namespace to port 8080
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-same-namespace-http
+  namespace: apps
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: {}  # same-namespace pods
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# Allow prometheus scraping from monitoring namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scrape
+  namespace: apps
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: my-app
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090
+---
+# Cluster-wide read-only (viewer) without write verbs
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-viewer-lite
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get","list","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-viewer-lite-binding
+subjects:
+  - kind: User
+    name: developer@example.com
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cluster-viewer-lite
+  apiGroup: rbac.authorization.k8s.io
+
