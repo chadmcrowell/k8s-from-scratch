@@ -86,3 +86,10 @@ sudo sed -i '/^#net\.ipv4\.ip_forward=1/s/^#//' /etc/sysctl.conf
 # Apply the changes to sysctl.conf
 # Any changes made to sysctl configuration files take immediate effect without requiring a reboot
 sudo sysctl -p
+
+###############################################
+### ⚠️ MOVE ON TO INITIALIZING K8S ⚠️ ##########
+###############################################
+
+# Now that you have containerd and kubernetes installed, you can move on to initializing kubernetes.
+# Go to the file initializing-k8s.sh
