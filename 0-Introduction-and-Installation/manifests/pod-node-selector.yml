@@ -10,5 +10,5 @@ spec:
     command:
       - sleep
       - "3600" 
-  nodeselector:
-    disktype: hdd
+  nodeSelector:
+    kubernetes.io/os: linux
