@@ -7,17 +7,29 @@ spec:
   - host: first.bar.com
     http:
       paths:
-      - backend:
-          serviceName: service1
-          servicePort: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: service1
+            port:
+              number: 80
   - host: second.foo.com
     http:
       paths:
-      - backend:
-          serviceName: service2
-          servicePort: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: service2
+            port:
+              number: 80
   - http:
       paths:
-      - backend: 
-          serviceName: service3
-          servicePort: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+           name: service3
+           port:
+             number: 80
