@@ -5,3 +5,6 @@
 ## SECTION 0: Introduction and Installation
 
 - LESSON 0: [The How and Why of Kubernetes](The-why-and-how-of-Kubernetes.md)
+- LESSON 1: [Running Applications in Kubernetes](Running-applications-in-Kubernetes.md)
+- LESSON 2:
+- LESSON 3:

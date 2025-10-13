@@ -18,6 +18,6 @@ git clone https://github.com/chadmcrowell/k8s-from-scratch.git
 
 ---
 
-Next Lesson
+[Next Lesson](Making-your-own-image-to-run-in-kubernetes.md)
 
 [Section 00 - Introduction and Installation](README.md)
