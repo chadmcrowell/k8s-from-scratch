@@ -2,9 +2,7 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: myapp
-
 ---
-
 kind: Pod
 apiVersion: v1
 metadata:
@@ -14,9 +12,7 @@ spec:
   containers:
     - image: httpd
       name: httpserver
-
 ---
-
 kind: Pod
 apiVersion: v1
 metadata:
