@@ -3,6 +3,8 @@
 Learn **how Kubernetes works — from the ground up - in any cloud**  
 This repository is a complete hands-on lab that helps you understand Kubernetes primitives, custom controllers, Helm, Kustomize, CRDs, and cluster security using Kyverno and Falco — **all without relying on managed services.**
 
+![kubernetes from scratch cover image](kubernetes-from-scratch-cover.png)
+
 ---
 
 ## 📘 Overview
@@ -24,13 +26,13 @@ Every YAML file in this repo is handcrafted for learning and production awarenes
 
 ```bash
 k8s-from-scratch/
-├── helm-values-examples.yaml           # Helm values for multiple tools (Kyverno, ArgoCD, Prometheus, Cilium, etc.)
-├── kustomization-examples.yaml         # 50+ Kustomize environments with environment labels and patches
-├── kustomization-patches.yaml          # Individual deployment patches per environment
-├── custom-resource-definitions.yaml    # 30+ CRDs (ArgoCD, Prometheus, LokiStack, cert-manager, Postgres Operator)
-├── kyverno-falco-policies.yaml         # Kyverno + Falco security policies and detection rules
-├── networkpolicy-rbac-examples.yaml    # Deny-all NetworkPolicies and namespace-level RBAC
-├── networkpolicy-rbac-variations.yaml  # Ingress-allowed NetworkPolicies and cluster-wide RBAC bindings
+├── 00-Introduction-and-Installation
+├── 01-
+├── 02-
+├── 03-
+├── 04-
+├── 05-
+├── 06-
 ├── awesome-k8s-resources.md            # Curated list of awesome CNCF tools and learning resources
 └── combined_output.yaml                # Aggregated manifest for testing or demo purposes
 ```
