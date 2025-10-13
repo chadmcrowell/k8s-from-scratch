@@ -7,5 +7,7 @@ spec:
     run: nginx
   ports:
   - port: 80
-    name: HTTP
+    name: "http"
+    targetPort: 80
+    nodePort: 30000
   type: NodePort
