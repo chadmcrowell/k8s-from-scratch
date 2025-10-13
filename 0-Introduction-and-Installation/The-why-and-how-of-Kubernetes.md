@@ -2,6 +2,8 @@
 
 [Access this lesson](https://community.kubeskills.com/c/kubernetes-from-scratch/edit-lesson/sections/761976/lessons/2889184)
 
+---
+
 ### Kubernetes Components
 - [https://kubernetes.io/docs/concepts/overview/components/](https://kubernetes.io/docs/concepts/overview/components/)
 
@@ -26,6 +28,6 @@ kubectl -n kube-system get pods -o wide
 
 ---
 
-Go to the next lesson
+[Next Lesson](Running-applications-in-Kubernetes.md)
 
 [Section 00 - Introduction and Installation](README.md)
