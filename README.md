@@ -24,18 +24,9 @@ Every YAML file in this repo is handcrafted for learning and production awarenes
 
 ## 🗂 Repository Structure
 
-```bash
-k8s-from-scratch/
-├── 00-Introduction-and-Installation
-├── 01-
-├── 02-
-├── 03-
-├── 04-
-├── 05-
-├── 06-
-├── awesome-k8s-resources.md            # Curated list of awesome CNCF tools and learning resources
-└── combined_output.yaml                # Aggregated manifest for testing or demo purposes
-```
+[00-Introduction-and-Installation](00-Introduction-and-Installation/README.md)
+
+
 
 ---
 
@@ -235,18 +226,6 @@ rules:
 
 ---
 
-## 🧩 Learning Path
-
-| Step | Topic                | File                               | Command             |
-| ---- | -------------------- | ---------------------------------- | ------------------- |
-| 1    | CRDs and Operators   | `custom-resource-definitions.yaml` | `kubectl apply -f`  |
-| 2    | Helm configuration   | `helm-values-examples.yaml`        | `helm install`      |
-| 3    | Kustomize overlays   | `kustomization-examples.yaml`      | `kubectl kustomize` |
-| 4    | Security enforcement | `kyverno-falco-policies.yaml`      | `kubectl apply -f`  |
-| 5    | Networking and RBAC  | `networkpolicy-rbac-examples.yaml` | `kubectl apply -f`  |
-
----
-
 ## 🧠 Best Practices Demonstrated
 
 * **Declarative configuration** via YAML and overlays
@@ -269,41 +248,6 @@ kubectl version --short
 helm version
 kustomize version
 ```
-
----
-
-## 🚀 Quickstart
-
-```bash
-# Clone the repo
-git clone https://github.com/<your-org>/k8s-from-scratch.git
-cd k8s-from-scratch
-
-# Deploy base CRDs
-kubectl apply -f custom-resource-definitions.yaml
-
-# Apply sample Helm values
-helm install kyverno kyverno/kyverno -f helm-values-examples.yaml
-
-# Apply Kustomize overlays
-kubectl apply -k overlays/env1
-
-# Enforce security rules
-kubectl apply -f kyverno-falco-policies.yaml
-
-# Apply network and RBAC configs
-kubectl apply -f networkpolicy-rbac-examples.yaml
-```
-
----
-
-## 🧩 Integrations
-
-* Works with [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)
-* Supports [FluxCD](https://fluxcd.io)
-* Uses [Kyverno](https://kyverno.io) for admission policies
-* Uses [Falco](https://falco.org) for runtime detection
-* Compatible with [Kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/) clusters and [Kind](https://kind.sigs.k8s.io/)
 
 ---
 
