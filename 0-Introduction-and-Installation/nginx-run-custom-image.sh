@@ -3,10 +3,10 @@
 # create a new instance and follow the instructions to initialize the cluster
 
 # view the noSchedule taint
-kubectl get nodes -o=custom-columns=NODE:.metadata.name,KEY:.spec.taints[*].key,VALUE:.spec.taints[*].value,EFFECT:.spec.taints[*].effect
+kubectl describe node controplane | grep Taints
 
 # remove the noSchedule taint
-kubectl taint no node1 node-role.kubernetes.io/master:NoSchedule-
+kubectl taint no controlplane node-role.kubernetes.io/master:NoSchedule-
 
 # create a deployment with your custom image
 kubectl create deploy custom --image chadmcrowell/nginx-custom:latest
