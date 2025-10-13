@@ -28,4 +28,4 @@ kubectl -n kube-system get pods -o wide
 
 Go to the next lesson
 
-[Go back to section 00 - Introduction and Installation](README.md)
+[Section 00 - Introduction and Installation](README.md)
