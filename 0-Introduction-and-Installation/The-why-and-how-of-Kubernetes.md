@@ -23,3 +23,9 @@ kubectl -n kube-system get pods
 # see which node the pod is running on
 kubectl -n kube-system get pods -o wide
 ```
+
+---
+
+Go to the next lesson
+
+[Go back to section 00](README.md)
