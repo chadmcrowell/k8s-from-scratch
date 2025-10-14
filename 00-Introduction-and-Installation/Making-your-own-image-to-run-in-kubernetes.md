@@ -51,6 +51,6 @@ kubectl get svc
 
 ---
 
-Next Lesson
+[Next Lesson](boostrap-cluster-with-kubeadm-on-any-cloud.md)
 
 [Section 00 - Introduction and Installation](README.md)
