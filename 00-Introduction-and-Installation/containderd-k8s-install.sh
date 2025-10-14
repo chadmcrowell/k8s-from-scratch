@@ -65,7 +65,7 @@ apt-cache madison kubectl
 apt-cache madison kubeadm
 
 
-KUBE_VERSION="1.33.2-1.1"
+KUBE_VERSION="1.34.1-1.1"
 
 # install kubelet, kubeadm, and kubectl at version 1.33.2-1.1
 sudo apt-get install -y kubelet=$KUBE_VERSION kubeadm=$KUBE_VERSION kubectl=$KUBE_VERSION
