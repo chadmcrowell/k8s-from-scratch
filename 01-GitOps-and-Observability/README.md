@@ -8,3 +8,7 @@
 - LESSON 06: Deploying Applications with GitOps and ArgoCD
 - LESSON 07: Apps Emitting Metrics, Logs, and Traces with OpenTelemetry
 - LESSON 08: Visualizing Observability Data with Grafana
+
+---
+
+[GO BACK](../README.md)

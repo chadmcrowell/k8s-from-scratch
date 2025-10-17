@@ -24,7 +24,8 @@ Every YAML file in this repo is handcrafted for learning and production awarenes
 
 ## 🗂 Repository Structure
 
-[00-Introduction-and-Installation](00-Introduction-and-Installation/README.md)
+- [00-Introduction-and-Installation](00-Introduction-and-Installation/README.md)
+- [01-GitOps-and-Observability](01-GitOps-and-Observability/README.md)
 
 
 
