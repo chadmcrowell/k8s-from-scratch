@@ -2,7 +2,7 @@
 
 ![Kubernetes from Scratch Cover](../kubernetes-from-scratch-cover.png)
 
-## SECTION 0: Introduction and Installation
+## SECTION 00: Introduction and Installation
 
 - LESSON 00: [The How and Why of Kubernetes](The-why-and-how-of-Kubernetes.md)
 - LESSON 01: [Running Applications in Kubernetes](Running-applications-in-Kubernetes.md)
