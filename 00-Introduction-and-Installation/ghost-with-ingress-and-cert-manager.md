@@ -189,6 +189,7 @@ EOF
 
 
 ### Additional Resources
+- [Bare-metal considerations - Ingress NGINX](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/)
 - [NoIP - Free DNS Names](https://noip.com)
 - [MetalLB - LB for Bare Metal Clusters](https://metallb.io/)
 - [MetalLB scenario similar to ours](https://medium.com/@DhaneshMalviya/ingress-with-metallb-loadbalancer-on-local-4-node-kubernetes-cluster-a0445357048)
