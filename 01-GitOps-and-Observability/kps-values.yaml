@@ -1,0 +1,54 @@
+# kps-values.yaml
+fullnameOverride: prometheus-stack
+
+# Discover ServiceMonitors/PodMonitors cluster-wide (not just by Helm labels)
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    retention: 15d
+    scrapeInterval: 30s
+    ruleSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "1Gi"
+      limits:
+        memory: "4Gi"
+
+# Alertmanager minimal, add your routes later
+alertmanager:
+  alertmanagerSpec:
+    replicas: 2
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        memory: "1Gi"
+
+# Grafana: set your own admin password and expose via NodeBalancer
+grafana:
+  adminUser: admin
+  adminPassword: "superSecretPassword!!"
+  service:
+    type: LoadBalancer
+    port: 80
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/"
+  persistence:
+    enabled: true
+    size: 10Gi
+  sidecar:
+    dashboards:
+      enabled: true
+    datasources:
+      enabled: true
+
+# kube-state-metrics & node-exporter are on by default in recent releases,
+# keep them enabled for cluster debugging:
+kubeStateMetrics:
+  enabled: true
+nodeExporter:
+  enabled: true

@@ -9,6 +9,11 @@
 [https://github.com/chadmcrowell/k8s-from-scratch](https://github.com/chadmcrowell/k8s-from-scratch)
 
 
+### Resources
+- [Prometheus Stack Overview - GitHub](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
+- [Prometheus Stack Values File](kps-values.yaml)
+- [Loki Values File](loki-values.yaml)
+
 ### Commands used in this lesson
 
 ```bash
@@ -18,7 +23,7 @@
 
 # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md
 
-# see below for values file
+# values file 'kps-values.yaml' in this same directory
 helm upgrade --install prometheus-stack prometheus-community/kube-prometheus-stack \
   --version 76.3.0 \
   --namespace monitoring \
@@ -121,7 +126,7 @@ ALERTS{alertstate="firing"}
 ####### INSTALL LOKI ######################
 ###########################################
 
-# see below for values file
+# values file 'loki-values.yaml' in this same directory (change values for your S3 bucket)
 
 # create secret with S3 bucket creds
 kubectl create secret generic loki-object-storage \
@@ -142,161 +147,11 @@ helm upgrade --install loki grafana/loki \
 # view all monitoring pods
 k -n monitoring get po
 
-
-
-
 ```
 
-```yaml
-# kps-values.yaml
-fullnameOverride: prometheus-stack
+[Prometheus Stack Values File - Use with Helm Install](kps-values.yaml)
+[Loki Values File - Use with Helm Install](loki-values.yaml)
 
-# Discover ServiceMonitors/PodMonitors cluster-wide (not just by Helm labels)
-prometheus:
-  prometheusSpec:
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    retention: 15d
-    scrapeInterval: 30s
-    ruleSelectorNilUsesHelmValues: false
-    resources:
-      requests:
-        cpu: "250m"
-        memory: "1Gi"
-      limits:
-        memory: "4Gi"
-
-# Alertmanager minimal, add your routes later
-alertmanager:
-  alertmanagerSpec:
-    replicas: 2
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "256Mi"
-      limits:
-        memory: "1Gi"
-
-# Grafana: set your own admin password and expose via NodeBalancer
-grafana:
-  adminUser: admin
-  adminPassword: "superSecretPassword!!"
-  service:
-    type: LoadBalancer
-    port: 80
-  grafana.ini:
-    server:
-      root_url: "%(protocol)s://%(domain)s/"
-  persistence:
-    enabled: true
-    size: 10Gi
-  sidecar:
-    dashboards:
-      enabled: true
-    datasources:
-      enabled: true
-
-# kube-state-metrics & node-exporter are on by default in recent releases,
-# keep them enabled for cluster debugging:
-kubeStateMetrics:
-  enabled: true
-nodeExporter:
-  enabled: true
-```
-
-```yaml
-# loki-values.yaml
-loki:
-  commonConfig:
-    replication_factor: 1
-  schemaConfig:
-    configs:
-      - from: "2024-04-01"
-        store: tsdb
-        object_store: s3
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
-  pattern_ingester:
-      enabled: true
-  limits_config:
-    allow_structured_metadata: true
-    volume_enabled: true
-  ruler:
-    enable_api: true
-  storage:
-    type: 's3'
-    bucketNames:
-      chunks: loki-logs
-      ruler: loki-logs
-      admin: loki-logs
-    s3:
-      endpoint: "es-mad-1.linodeobjects.com"
-      region: "es-mad-1"
-      s3ForcePathStyle: true
-      insecure: false
-  chunksCache:
-    enabled: false
-
-minio:
-  enabled: false
-      
-deploymentMode: SingleBinary
-
-singleBinary:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi
-  persistence:
-    enabled: true
-    size: 10Gi
-    storageClass: linode-block-storage-retain
-  extraEnv:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: loki-object-storage
-          key: AWS_ACCESS_KEY_ID
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: loki-object-storage
-          key: AWS_SECRET_ACCESS_KEY
-
-# Zero out replica counts of other deployment modes
-backend:
-  replicas: 0
-read:
-  replicas: 0
-write:
-  replicas: 0
-
-ingester:
-  replicas: 0
-querier:
-  replicas: 0
-queryFrontend:
-  replicas: 0
-queryScheduler:
-  replicas: 0
-distributor:
-  replicas: 0
-compactor:
-  replicas: 0
-indexGateway:
-  replicas: 0
-bloomCompactor:
-  replicas: 0
-bloomGateway:
-  replicas: 0
-
-```
 
 
 ---
