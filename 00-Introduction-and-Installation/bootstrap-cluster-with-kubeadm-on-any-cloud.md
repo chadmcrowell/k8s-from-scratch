@@ -116,6 +116,6 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/
 
 ---
 
-[Next Lesson] 
+[Next Lesson](ghost-with-ingress-and-cert-manager.md)
 
 [Section 00 - Introduction and Installation](README.md)
