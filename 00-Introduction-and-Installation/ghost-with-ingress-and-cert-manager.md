@@ -212,6 +212,6 @@ EOF
 
 ---
 
-[Next Lesson]
+[Next Lesson](../01-GitOps-and-Observability/observability-prometheus-and-loki.md)
 
 [Section 00 - Introduction and Installation](README.md)
