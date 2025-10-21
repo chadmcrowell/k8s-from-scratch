@@ -149,8 +149,15 @@ k -n monitoring get po
 
 ```
 
-[Prometheus Stack Values File - Use with Helm Install](kps-values.yaml)
-[Loki Values File - Use with Helm Install](loki-values.yaml)
+
+### Additional Resources
+
+- [Prometheus Stack Values File - Use with Helm Install](kps-values.yaml)
+- [Loki Values File - Use with Helm Install](loki-values.yaml)
+- [Prometheus Stack Overview - GitHub](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
+- [Installing Loki - Grafana Docs](https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/)
+- [Create S3 Bucket with Access Keys in Linode](https://techdocs.akamai.com/cloud-computing/docs/create-and-manage-buckets)
+
 
 
 
