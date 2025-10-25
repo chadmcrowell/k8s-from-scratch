@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  namespace: ghost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+      - name: ghost
+        image: ghost:6-alpine
+        ports:
+        - containerPort: 2368
+        env:
+        - name: database__client
+          value: sqlite3
+        - name: database__connection__filename
+          value: /var/lib/ghost/content/data/ghost.db
+        - name: url
+          value: https://mycluster.ddns.net
+        volumeMounts:
+        - name: ghost-content
+          mountPath: /var/lib/ghost/content
+      volumes:
+      - name: ghost-content
+        persistentVolumeClaim:
+          claimName: ghost-pvc
