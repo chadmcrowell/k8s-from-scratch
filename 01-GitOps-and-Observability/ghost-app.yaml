@@ -1,0 +1,23 @@
+# ghost-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ghost
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"  # Deploy last, after infrastructure
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/your-username/your-repo.git
+    targetRevision: main
+    path: ghost
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ghost
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
