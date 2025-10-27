@@ -122,3 +122,10 @@ git push origin main
 kubectl apply -f argocd-apps/app-of-apps.yaml
 ```
 
+
+
+---
+
+[Next Lesson]
+
+[Section 01 - GitOps and Observability](README.md)

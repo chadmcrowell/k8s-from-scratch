@@ -163,6 +163,6 @@ k -n monitoring get po
 
 ---
 
-[Next Lesson] 
+[Next Lesson](apps-with-gitops-and-argocd.md)
 
 [Section 01 - GitOps and Observability](README.md)
