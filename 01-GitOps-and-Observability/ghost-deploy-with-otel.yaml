@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  namespace: ghost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+      - name: ghost
+        image: chadmcrowell/ghost-otel:latest
+        ports:
+        - containerPort: 2368
+        env:
+        - name: database__client
+          value: sqlite3
+        - name: database__connection__filename
+          value: /var/lib/ghost/content/data/ghost.db
+        - name: url
+          value: https://mycluster.ddns.net
+        - name: NODE_OPTIONS
+          value: "--require @opentelemetry/auto-instrumentations-node/register"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector.ghost.svc.cluster.local:4318"
+        - name: OTEL_SERVICE_NAME
+          value: "ghost-blog"
+        - name: OTEL_TRACES_EXPORTER
+          value: "otlp"
+        - name: OTEL_METRICS_EXPORTER
+          value: "otlp"
+        - name: OTEL_LOGS_EXPORTER
+          value: "otlp"
+        - name: OTEL_TRACES_SAMPLER
+          value: "traceidratio"
+        - name: OTEL_TRACES_SAMPLER_ARG
+          value: "0.5"  # Sample 50% of traces
+        - name: OTEL_NODE_DISABLED_INSTRUMENTATIONS
+          value: "fs,dns"  # Reduce noise by disabling filesystem and DNS tracing
+        volumeMounts:
+        - name: ghost-content
+          mountPath: /var/lib/ghost/content
+      volumes:
+      - name: ghost-content
+        persistentVolumeClaim:
+          claimName: ghost-pvc

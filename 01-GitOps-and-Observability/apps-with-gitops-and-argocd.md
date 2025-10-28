@@ -120,6 +120,11 @@ git commit -m "Prepare repo for ArgoCD"
 git push origin main
 
 kubectl apply -f argocd-apps/app-of-apps.yaml
+
+
+# List all applications managed by app-of-apps
+argocd app list
+
 ```
 
 
