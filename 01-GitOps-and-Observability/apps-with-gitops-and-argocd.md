@@ -177,6 +177,6 @@ argocd app list
 
 ---
 
-[Next Lesson]
+[Next Lesson](metrics-logs-traces-with-opentelemetry.md)
 
 [Section 01 - GitOps and Observability](README.md)
