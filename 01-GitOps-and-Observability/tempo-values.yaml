@@ -1,0 +1,36 @@
+# tempo-values.yaml
+tempo:
+  searchEnabled: true
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: traces
+        endpoint: es-mad-1.linodeobjects.com
+        access_key: $ACCESS_KEY
+        secret_key: $SECRET_KEY
+        insecure: true
+  
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
+        grpc:
+          endpoint: 0.0.0.0:4317
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClassName: null  # Use default storage class
+
+serviceMonitor:
+  enabled: true
+
+resources:
+  limits:
+    memory: 1Gi
+    cpu: 1000m
+  requests:
+    memory: 512Mi
+    cpu: 250m

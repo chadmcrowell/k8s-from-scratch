@@ -1,0 +1,16 @@
+# servicemon-otel.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    release: prometheus-stack   # Must match the release name in your Helm chart
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-collector
+  endpoints:
+    - port: prometheus  # Make sure this matches your collector service port name
+      interval: 30s
+      path: /metrics
