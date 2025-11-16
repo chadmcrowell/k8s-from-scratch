@@ -521,6 +521,8 @@ metadata:
     app.kubernetes.io/version: 1.13.3
   name: ingress-nginx-admission-create
   namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/hook: Skip
 spec:
   template:
     metadata:
@@ -575,6 +577,8 @@ metadata:
     app.kubernetes.io/version: 1.13.3
   name: ingress-nginx-admission-patch
   namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/hook: Skip
 spec:
   template:
     metadata:
