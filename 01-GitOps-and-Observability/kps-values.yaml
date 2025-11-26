@@ -32,8 +32,9 @@ grafana:
   adminUser: admin
   adminPassword: "superSecretPassword!!"
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
+    targetPort: 3000
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/"
