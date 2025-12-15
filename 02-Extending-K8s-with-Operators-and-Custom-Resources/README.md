@@ -6,8 +6,7 @@
 
 - LESSON 08: [What Are Custom Resource Definitions (CRDs)?](what-are-crds.md)
 - LESSON 09: [The Operator Pattern: Controllers That Watch and Act](operator-pattern.md)
-- LESSON 10: Creating Your First Custom Resource Definition
-- LESSON 11: Building a Simple Operator with Kubebuilder
+- LESSON 10: [Building a Simple Operator with Kubebuilder](build-simple-opeartor.md)
 
 ---
 
